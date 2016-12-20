@@ -25,13 +25,13 @@ public class SatisfactionValueService {
             String line;
             int count = 0;
             while ((line = br.readLine()) != null) {
-                if (count == 0) {
+                if (count == 0) { //read first line to find out total given time and no of dishes available
                     String[] line1 = line.split(delimiter);
                     tolTime = Integer.parseInt(line1[0]);
                     noOfDishes = Integer.parseInt(line1[1]);
                     satValues = new ArrayList<Integer>(noOfDishes);
                     timeSpent = new ArrayList<Integer>(noOfDishes);
-                } else {
+                } else { // read all other lines and populate the satisfaction value and time taken list
                     String[] ln = line.split(delimiter);
                     satValues.add(Integer.valueOf(ln[0]));
                     timeSpent.add(Integer.valueOf(ln[1]));
