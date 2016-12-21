@@ -4,6 +4,7 @@ package com.test.problem;
 import com.test.problem.service.SatisfactionValueService;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -11,6 +12,16 @@ import static org.junit.Assert.assertEquals;
 
 public class SatisfactionValCalculatorTest {
     SatisfactionValueService satisfactionValueService = new SatisfactionValueService();
+
+    @Test(expected = NullPointerException.class)
+    public void testProcessFileAndCalculateWhenFileNotExists() throws IOException {
+        satisfactionValueService.processFileAndCalculate("donotExist.txt");
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testProcessFileAndCalculateWhenEmptyFile() throws IOException {
+        satisfactionValueService.processFileAndCalculate("emptyFile.txt");
+    }
 
     @Test
     public void testSatisfactionValueWhenInvalidInput() {

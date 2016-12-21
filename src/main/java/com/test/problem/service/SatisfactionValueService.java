@@ -10,18 +10,17 @@ import java.util.List;
 @Service
 public class SatisfactionValueService {
     private final static String delimiter = " ";
-
     /*
     Process the input text file and find out total time, satisfaction value per dish, time taken per dish and no of dishes available
      */
-    public long processFileAndCalculate(MultipartFile file) {
+    public long processFileAndCalculate(String dataFilename) throws IOException {
         BufferedReader br = null;
         int tolTime = 0;
         int noOfDishes = 0;
         List<Integer> satValues = null;
         List<Integer> timeSpent = null;
         try {
-            br = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
+            br = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(dataFilename), "UTF-8"));
             String line;
             int count = 0;
             while ((line = br.readLine()) != null) {
@@ -29,8 +28,8 @@ public class SatisfactionValueService {
                     String[] line1 = line.split(delimiter);
                     tolTime = Integer.parseInt(line1[0]);
                     noOfDishes = Integer.parseInt(line1[1]);
-                    satValues = new ArrayList<Integer>(noOfDishes);
-                    timeSpent = new ArrayList<Integer>(noOfDishes);
+                    satValues = new ArrayList<>(noOfDishes);
+                    timeSpent = new ArrayList<>(noOfDishes);
                 } else { // read all other lines and populate the satisfaction value and time taken list
                     String[] ln = line.split(delimiter);
                     satValues.add(Integer.valueOf(ln[0]));
@@ -38,15 +37,21 @@ public class SatisfactionValueService {
                 }
                 count++;
             }
-        } catch (IOException e) {
+            if(count==0)
+            {
+                throw new RuntimeException("Empty file not accepted");
+            }
+        } catch (NullPointerException|IOException e) {
             e.printStackTrace();
+            throw e;
         } finally {
-            if (br != null)
+            if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
         }
         return calculateSatisfactionValue(tolTime, satValues, timeSpent, noOfDishes);
     }
